@@ -6,7 +6,7 @@ TOKEN = "8035496121:AAFllT7uo-we6QRreYZPj7v6beDqQS4wBmg"
 ADMIN_ID = 7824942822
 
 # Majburiy obuna uchun kanal
-REQUIRED_CHANNEL = "@XGxJdz3kyAkyZDYy"  # Bu sening kanal havolang
+REQUIRED_CHANNEL = "@instaXsSaver"  # Bu sening kanal havolang
 
 # Obuna tekshiruvi
 def check_subscription(user_id, context: CallbackContext):
