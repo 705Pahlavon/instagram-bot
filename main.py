@@ -51,27 +51,3 @@ def main():
 
     updater.start_polling()
     updater.idle()
-from telegram.ext import CommandHandler
-
-# Admin ID
-ADMIN_ID = 7824942822
-
-def admin_panel(update: Update, context: CallbackContext):
-    user_id = update.effective_user.id
-    if user_id != ADMIN_ID:
-        update.message.reply_text("⛔ Siz admin emassiz.")
-        return
-
-    text = (
-        "👨‍💻 <b>Admin Panel</b>\n\n"
-        "1. 📊 Statistika\n"
-        "2. 📎 Obuna kanal: " + REQUIRED_CHANNEL + "\n"
-        "3. 🔄 Kanalni o‘zgartirish (tez orada)\n"
-        "4. 📤 Xabar yuborish (tez orada)"
-    )
-    update.message.reply_text(text, parse_mode="HTML")
-
-# main() ichida:
-dp.add_handler(CommandHandler("admin", admin_panel))
-if __name__ == "__main__":
-    main()
