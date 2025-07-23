@@ -27,7 +27,9 @@ def start(update: Update, context: CallbackContext):
         return
     update.message.reply_text("👋 Salom! Menga Instagram link yuboring.")
 
-# Instagram linklar uchun ishlovchi
+import requests
+from bs4 import BeautifulSoup
+
 def handle_message(update: Update, context: CallbackContext):
     user = update.effective_user
     if not check_subscription(user.id, context):
@@ -38,7 +40,31 @@ def handle_message(update: Update, context: CallbackContext):
 
     text = update.message.text
     if "instagram.com" in text:
-        update.message.reply_text("📥 Yuklanmoqda... (Instagram yuklash kodini shu yerga yoziladi)")
+        update.message.reply_text("📥 Yuklanmoqda...")
+
+        try:
+            # Yuklab olish uchun ssstik.io ishlatilmoqda
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+            }
+            session = requests.Session()
+            page = session.get("https://ssstik.io/en", headers=headers)
+            soup = BeautifulSoup(page.content, "html.parser")
+
+            token = soup.find("input", {"id": "token"})["value"]
+            response = session.post("https://ssstik.io/abc", data={
+                "id": text,
+                "locale": "en",
+                "tt": token
+            }, headers=headers)
+
+            soup = BeautifulSoup(response.content, "html.parser")
+            video_url = soup.find("a", class_="result__btn")["href"]
+
+            context.bot.send_video(chat_id=update.effective_chat.id, video=video_url, caption="✅ Instagram video yuklandi")
+        except Exception as e:
+            update.message.reply_text("❌ Videoni yuklab bo‘lmadi. Ehtimol, bu private post yoki link noto‘g‘ri.")
+            print(e)
     else:
         update.message.reply_text("❌ Bu Instagram link emas!")
 
