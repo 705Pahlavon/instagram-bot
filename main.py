@@ -57,7 +57,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 # 🔐 TOKEN va ADMIN ID
 TOKEN = "8035496121:AAFllT7uo-we6QRreYZPj7v6beDqQS4wBmg"
 ADMIN_ID = 7824942822
-REQUIRED_CHANNEL = "@XGxJdz3kyAkyZDYy"  # Majburiy obuna kanaling
+REQUIRED_CHANNEL = "@instaXsSaver"  # Majburiy obuna kanaling
 
 # ✅ Obuna tekshiruv funksiyasi
 def check_subscription(user_id, context: CallbackContext):
