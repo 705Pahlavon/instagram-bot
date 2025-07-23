@@ -51,3 +51,74 @@ def main():
 
     updater.start_polling()
     updater.idle()
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+
+# 🔐 TOKEN va ADMIN ID
+TOKEN = "8035496121:AAFllT7uo-we6QRreYZPj7v6beDqQS4wBmg"
+ADMIN_ID = 7824942822
+REQUIRED_CHANNEL = "@XGxJdz3kyAkyZDYy"  # Majburiy obuna kanaling
+
+# ✅ Obuna tekshiruv funksiyasi
+def check_subscription(user_id, context: CallbackContext):
+    try:
+        member = context.bot.get_chat_member(REQUIRED_CHANNEL, user_id)
+        return member.status in ["member", "administrator", "creator"]
+    except:
+        return False
+
+# 🚀 /start komandasi
+def start(update: Update, context: CallbackContext):
+    user = update.effective_user
+    if not check_subscription(user.id, context):
+        button = InlineKeyboardButton("🔗 Obuna bo‘lish", url=f"https://t.me/{REQUIRED_CHANNEL[1:]}")
+        markup = InlineKeyboardMarkup([[button]])
+        update.message.reply_text("❗ Botdan foydalanish uchun kanalga obuna bo‘ling:", reply_markup=markup)
+        return
+    update.message.reply_text("👋 Salom! Menga Instagram link yuboring.")
+
+# 📥 Instagram linkni qabul qilish
+def handle_message(update: Update, context: CallbackContext):
+    user = update.effective_user
+    if not check_subscription(user.id, context):
+        button = InlineKeyboardButton("🔗 Obuna bo‘lish", url=f"https://t.me/{REQUIRED_CHANNEL[1:]}")
+        markup = InlineKeyboardMarkup([[button]])
+        update.message.reply_text("❗ Avval kanalga obuna bo‘ling:", reply_markup=markup)
+        return
+
+    text = update.message.text
+    if "instagram.com" in text:
+        update.message.reply_text("📥 Yuklanmoqda... (Instagram yuklash kodini bu yerga yoziladi)")
+    else:
+        update.message.reply_text("❌ Bu Instagram link emas!")
+
+# ⚙️ Admin panel funksiyasi
+def admin_panel(update: Update, context: CallbackContext):
+    user_id = update.effective_user.id
+    if user_id != ADMIN_ID:
+        update.message.reply_text("⛔ Siz admin emassiz.")
+        return
+
+    text = (
+        "👨‍💻 <b>Admin Panel</b>\n\n"
+        "1. 📊 Statistika (tez orada)\n"
+        f"2. 📎 Obuna kanal: {REQUIRED_CHANNEL}\n"
+        "3. 🔄 Kanalni o‘zgartirish (tez orada)\n"
+        "4. 📤 Xabar yuborish (tez orada)"
+    )
+    update.message.reply_text(text, parse_mode="HTML")
+
+# ✅ Barcha handlerlar shu yerda jamlanadi
+def main():
+    updater = Updater(TOKEN, use_context=True)
+    dp = updater.dispatcher
+
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("admin", admin_panel))  # ← Admin komandasi
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
+
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == "__main__":
+    main()
